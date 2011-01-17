@@ -1,0 +1,95 @@
+------------------------------------------------------------------------
+r982 | nevcairiel | 2010-10-27 14:29:36 +0000 (Wed, 27 Oct 2010) | 1 line
+Changed paths:
+   A /tags/Release-r981 (from /trunk:981)
+
+Tag as Release-r981
+------------------------------------------------------------------------
+r981 | nevcairiel | 2010-10-27 14:28:44 +0000 (Wed, 27 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/changelog.txt
+
+Update changelog
+------------------------------------------------------------------------
+r980 | nevcairiel | 2010-10-27 14:20:11 +0000 (Wed, 27 Oct 2010) | 3 lines
+Changed paths:
+   M /trunk/AceAddon-3.0/AceAddon-3.0.lua
+
+AceAddon-3.0:
+- Fix an library upgrade issue that always reset the modules enabled state
+- Properly implemented ordered module loading
+------------------------------------------------------------------------
+r979 | nevcairiel | 2010-10-27 09:49:28 +0000 (Wed, 27 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/AceAddon-3.0/AceAddon-3.0.lua
+
+AceAddon-3.0: bump minor so the reverted version actually gets used
+------------------------------------------------------------------------
+r978 | kaelten | 2010-10-27 00:04:36 +0000 (Wed, 27 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/AceAddon-3.0/AceAddon-3.0.lua
+
+Reverting back to 975 due to mass breakage.
+------------------------------------------------------------------------
+r977 | kaelten | 2010-10-26 23:54:25 +0000 (Tue, 26 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/AceAddon-3.0/AceAddon-3.0.lua
+
+Fixing it so that addon modules are enabled during the initialization queue as well.
+------------------------------------------------------------------------
+r976 | nevcairiel | 2010-10-26 19:52:45 +0000 (Tue, 26 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/AceAddon-3.0/AceAddon-3.0.lua
+
+AceAddon-3.0: Enable modules in the proper order on initial load
+------------------------------------------------------------------------
+r975 | nevcairiel | 2010-10-23 11:26:18 +0000 (Sat, 23 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/AceEvent-3.0/AceEvent-3.0.lua
+
+AceEvent-3.0: Fix documentation
+------------------------------------------------------------------------
+r974 | nevcairiel | 2010-10-23 11:22:46 +0000 (Sat, 23 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/AceGUI-3.0/widgets/AceGUIWidget-Keybinding.lua
+
+AceGUI-3.0: Keybinding: Don't steal key presses when not enabled (Ticket #169)
+------------------------------------------------------------------------
+r973 | nevcairiel | 2010-10-14 05:10:40 +0000 (Thu, 14 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/AceGUI-3.0/widgets/AceGUIWidget-EditBox.lua
+   M /trunk/AceGUI-3.0/widgets/AceGUIWidget-MultiLineEditBox.lua
+
+AceGUI: Replace GetSpellName with GetSpellInfo
+------------------------------------------------------------------------
+r971 | nevcairiel | 2010-10-12 18:55:55 +0000 (Tue, 12 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/changelog.txt
+
+Update changelog
+------------------------------------------------------------------------
+r970 | nevcairiel | 2010-10-12 18:17:30 +0000 (Tue, 12 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/Ace3.toc
+
+Bump toc
+------------------------------------------------------------------------
+r969 | shefki | 2010-10-07 02:11:48 +0000 (Thu, 07 Oct 2010) | 2 lines
+Changed paths:
+   M /trunk/AceConfig-3.0/AceConfig-3.0.lua
+
+Add link to documentation of the contents of the options table.
+
+------------------------------------------------------------------------
+r968 | nevcairiel | 2010-10-06 06:44:54 +0000 (Wed, 06 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/AceGUI-3.0/widgets/AceGUIContainer-ScrollFrame.lua
+
+AceGUI-3.0: ScrollFrame: Allow for a small margin of error when determining if the scroll bar should be shown.
+------------------------------------------------------------------------
+r967 | nevcairiel | 2010-09-25 08:20:55 +0000 (Sat, 25 Sep 2010) | 1 line
+Changed paths:
+   M /trunk/AceConfig-3.0/AceConfigDialog-3.0/AceConfigDialog-3.0.lua
+
+AceConfigDialog-3.0: Fix a typo that broke options sorting by name in case of same order (Ticket #172)
+------------------------------------------------------------------------

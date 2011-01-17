@@ -1,0 +1,15 @@
+## Interface: 40000
+## Title: Zugslist (www.zugslist.com)
+## Notes: "Zugslist.com: Making it easier for you to get things done!"
+## Author: Thomas Robertson
+## Version: 1.0
+## SavedVariables: ZugslistData
+## SavedVariablesPerCharacter: ZugslistTradeParser, ZugslistOptions
+## OptionalDeps: Ace3
+## X-Embeds: Ace3
+## X-Category: Miscellaneous
+
+embeds.xml
+
+Zugslist.lua
+TradeParser.lua
