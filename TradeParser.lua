@@ -1,12 +1,11 @@
-local ZugsTradeParser = LibStub("AceAddon-3.0"):NewAddon("ZugslistTradeParser", "AceConsole-3.0", "AceEvent-3.0")
-
+ZugsTradeParser = LibStub("AceAddon-3.0"):NewAddon("ZugslistTradeParser", "AceConsole-3.0", "AceEvent-3.0")
+local ZugsTradeParser = _G.ZugsTradeParser
 
 -- local variables
 local player = UnitName("player")
 local guid = UnitGUID("player")
 local faction = UnitFactionGroup("player")
 local realmName = GetRealmName()
-
 
 -- initialize the database structure
 function ZugsTradeParser:OnInitialize()
@@ -18,7 +17,8 @@ function ZugsTradeParser:OnEnable()
 	self:RegisterEvent("CHAT_MSG_CHANNEL", "ChatEvent")
 	self:RegisterEvent("CHAT_MSG_SAY", "ChatEvent")
 	self:RegisterEvent("CHAT_MSG_WHISPER", "ChatEvent")
-	self:RegisterEvent("CHAT_MSG_YELL", "ChatEvent")			
+	self:RegisterEvent("CHAT_MSG_YELL", "ChatEvent")
+	self:RegisterEvent("CHAT_MSG_GUILD", "ChatEvent")
 	self:RegisterEvent("TRADE_SKILL_SHOW", "WindowEvent")
 end
 
@@ -35,7 +35,6 @@ end
 
 -- get other users' trade window from links posted in chat channels
 function ZugsTradeParser:ChatEvent(event, message, character, _, _, _, _, _, _, _, _, _, guid )
-		
 	-- if (arg9 == "TCForwarder2IIll") then 
 	-- 	local parsedCharname = string.match(message, "^_\$%d+([A-Za-z]+)_\$.*")
 	-- 	ParseEvent(event,message,parsedCharname)
@@ -43,7 +42,6 @@ function ZugsTradeParser:ChatEvent(event, message, character, _, _, _, _, _, _, 
 	local parsedGUID = string.match(guid, "0x0([0-9A-F]+)")
 	ParseEvent(event, message, character, parsedGUID)
 	-- end
-	
 end
 
 -- parse trade info and store in global saved var ZugslistTradeParser
@@ -80,7 +78,6 @@ function ParseEvent(event, message, character, guid)
 	end	
 end
 
-
 function matchSpecialization(LinkText)
 	if isProfession(LinkText) then
 		return LinkText
@@ -97,10 +94,7 @@ function matchSpecialization(LinkText)
 	else
 		return ""	
 	end
-		
 end
-
-
 
 function isProfession(LinkText)
 	if (in_table(LinkText,{'Alchemy','Blacksmithing','Enchanting','Engineering', 'Herbalism', 'Inscription', 'Jewelcrafting', 'Leatherworking', 'Mining', 'Skinning', 'Tailoring', 'Cooking','First Aid'})) then
@@ -117,6 +111,7 @@ function isAlchemySpecialization(LinkText)
 		return false
 	end
 end
+
 function isBlacksmithingSpecialization(LinkText)
 	if (in_table(LinkText,{"Armorsmith", "Hammersmith", "Swordsmith"})) then
 		return true
@@ -124,6 +119,7 @@ function isBlacksmithingSpecialization(LinkText)
 		return false
 	end
 end
+
 function isEngineeringSpecialization(LinkText)
 	if (string.match(LinkText,"Engineer")) then
 		return true
@@ -131,6 +127,7 @@ function isEngineeringSpecialization(LinkText)
 		return false
 	end
 end
+
 function isLeatherworkingSpecialization(LinkText)
 	if (string.match(LinkText,"Leatherworking")) then
 		return true
@@ -138,6 +135,7 @@ function isLeatherworkingSpecialization(LinkText)
 		return false
 	end
 end
+
 function isTailoringSpecialization(LinkText)
 	if (string.match(LinkText,"Tailoring")) then
 		return true
@@ -152,19 +150,3 @@ function in_table ( e, t )
 	end
 	return false
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

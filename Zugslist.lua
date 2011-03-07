@@ -182,6 +182,7 @@ function Zugslist:ToggleBuyFrameOn()
 		self:GenerateNewMasterFrame()
 	end
 	sell_tab_frame.frame:Hide()
+  frame_label:SetText("Buying")
 	if not buy_tab_frame:IsVisible() then
 		master_frame.children[2] = buy_tab_frame
 		buy_tab_frame.frame:Show()
@@ -196,6 +197,7 @@ function Zugslist:ToggleSellFrameOn()
 		self:ToggleSellFrameOn()
 	end
 	buy_tab_frame.frame:Hide()
+  frame_label:SetText("Selling")
 	if not sell_tab_frame:IsVisible() then
 		master_frame.children[2] = sell_tab_frame
 		sell_tab_frame.frame:Show()
@@ -224,11 +226,9 @@ function Zugslist:GenerateNewMasterFrame()
 		if buy_tab_frame:IsVisible() then
 			Zugslist:ToggleSellFrameOn()
 			object:SetText("Buy")
-			frame_label:SetText("Selling")
 		elseif sell_tab_frame:IsVisible() then
 			Zugslist:ToggleBuyFrameOn()
 			object:SetText("Sell")
-			frame_label:SetText("Buying")
 		end
 	end)
 	
@@ -384,7 +384,7 @@ function Zugslist:CHAT_MSG_LOOT(event, msg)
 	if item_id then
 		if ZugsTradeDB["wanted"][item_id] then
 			if best_price >= ZugslistOptions["min_alert_value"] then
-				print_string = "Someone on Zugslsit wants to buy it for"..CurrencyConversion(ZugslistTradeDB["wanted"][item_id]).."."
+				print_string = "Someone on Zugslist wants to buy it for"..CurrencyConversion(ZugslistTradeDB["wanted"][item_id]).."."
 				print(print_string)
 			end
 		end
