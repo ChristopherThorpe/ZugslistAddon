@@ -1,0 +1,54 @@
+Zuglist Addon
+=============
+
+Installation
+------------
+
+1) Copy the contents of the check-out to $WOWDIR$/Interface/Addons/Zugslist/*
+2) Sync via zugslist.com
+3) Run WoW
+4) Type in /wts [query] or /wtb [query] to search for an item
+
+Development
+-----------
+
+1) The available variables are configured in Zugslist.toc.  Modify the per-char /
+   global variable stores in that file.
+
+   - Tradelinks collected by the addon are stored in the per-character files.
+   - The WTS database is stored in the account-wide files
+
+2) TradeParser.lua registers a bunch of event handlers.  Search for "register event\
+   handlers" to find the list of channels that it modifies.
+
+3) Zugslist.lua contains the user interface and handles searching for items.
+
+   - Looks like Ace is used as the UI toolkit.
+   - Zugslist:OnInitialize registers the console commands and sets up the databases
+     ( scoping the database to the current realm and server)
+   - OpenFrameFromConsole seems to be the entry point for /zugslist
+   - Parse{WTB,WTS} is the entry point for /wtb, /wts
+   - Apparently the WTS / WTB UIs are implemented as two tabs, but you have to use
+     the button to switch between tabs.
+   - The file format appears to be:
+       'ZugslistData' => :realm => :faction => [:ports, :wtb, :wts, :wanted]
+   - This part of the addon also monitors loots and spams you if you loot something
+     that someone has offered to buy.
+
+4) For the Upload file format, see the Rails repo: test/fixtures/addon_output.lua
+
+5) This is my best approximation of the Downloader format thus far:
+
+ZugslistData = {
+  ["Vashj"] = {
+    ["Horde"] = {
+      ["wtb"] = {
+        { 16848, 50000, 'Aurisor' },
+        { 16848, 20000, 'Oriyaa' }
+      },
+      ["wts"] = {
+        { 16848, 50000, 'Aurisor' },
+        { 16848, 20000, 'Oriyaa' }
+      }
+    }
+  }

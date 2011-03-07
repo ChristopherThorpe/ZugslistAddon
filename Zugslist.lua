@@ -1,4 +1,6 @@
-local Zugslist = LibStub("AceAddon-3.0"):NewAddon("Zugslist", "AceConsole-3.0", "AceEvent-3.0")
+Zugslist = LibStub("AceAddon-3.0"):NewAddon("Zugslist", "AceConsole-3.0", "AceEvent-3.0")
+local Zugslist = _G.Zugslist
+
 local AceGUI = LibStub("AceGUI-3.0")
 local ScrollTable = LibStub("ScrollingTable")
 local wholib = LibStub:GetLibrary("LibWho-2.0"):Library()
