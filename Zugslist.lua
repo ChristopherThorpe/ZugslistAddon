@@ -332,14 +332,14 @@ function TabChange(container, event, tab_clicked)
     tables[tab_clicked]:EnableSelection(false)
   end
   if tab_clicked == "buy_port" then
-    table_data[tab_clicked] = Zugslist:CurrencyConversion(ZugsTradeDB["ports"], 2)
+    table_data[tab_clicked] = ZugsTradeDB["ports"]
   elseif tab_clicked == "buy_item" then
-    table_data[tab_clicked] = Zugslist:CurrencyConversion(ZugsTradeDB["wts"], 2)
+    table_data[tab_clicked] = ZugsTradeDB["wts"]
   elseif tab_clicked == "sell_item" then
-    table_data[tab_clicked] = Zugslist:CurrencyConversion(ZugsTradeDB["wtb"], 2)
+    table_data[tab_clicked] = ZugsTradeDB["wtb"]
   end
   if table_data[tab_clicked] then
-    tables[tab_clicked]:SetData(table_data[tab_clicked], 1)
+   tables[tab_clicked]:SetData(table_data[tab_clicked])
   end
   for k in pairs(tables) do
     tables[k]:Hide()

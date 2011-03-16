@@ -37,18 +37,24 @@ Development
 
 4) For the Upload file format, see the Rails repo: test/fixtures/addon_output.lua
 
-5) This is my best approximation of the Downloader format thus far:
+5) Here's the data the server provides, which renders on the client:
 
 ZugslistData = {
   ["Vashj"] = {
     ["Horde"] = {
+      ["ports"] = { },
+      ["wanted"] = { },
       ["wtb"] = {
-        { 16848, 50000, 'Aurisor' },
-        { 16848, 20000, 'Oriyaa' }
       },
       ["wts"] = {
-        { 16848, 50000, 'Aurisor' },
-        { 16848, 20000, 'Oriyaa' }
-      }
-    }
-  }
+        {
+          ["cols"] = {
+            { ["value"] = "|cffffffff|Hitem:4240:0:0:0:0:0:0:0:0|h[Woolen Bag]|h|r", },
+            { ["value"] = "50g 30s 21", },
+            { ["value"] = "Oriyaa", },
+          },
+        },
+      },
+    },
+  },
+}
