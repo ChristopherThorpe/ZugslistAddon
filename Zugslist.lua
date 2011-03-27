@@ -396,7 +396,6 @@ function Zugslist:PopulateOnlineUsers()
     name = v["cols"][name_index]["value"]
 
     if not user_in_table(name, users_online_table) then
-      print("Checking for: "..name)
       wholib:Who("n-"..name, { callback =
         function (query, results, complete)
           if table.getn(results) == 1 then
