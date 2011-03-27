@@ -21,54 +21,51 @@ local table_columns = {
   ["port"] = { "Player", "Price", "Level" },
 }
 
+function SearchItem(self, row)
+    if SearchTextBlank() then return true end
+
+    found = false
+
+    row_item = row["cols"][1]["value"]
+    row_player = row["cols"][3]["value"]
+    row_item_id = ParseItemID(row_item)
+    search_item_id = ParseItemID(GetSearchText())
+
+    if search_id then
+      found = found or (search_item_id == row_item_id)
+    end
+
+    -- Search by item id
+    found = found or string.find(strupper(row_item), strupper(GetSearchText()))
+
+    -- Search by player
+    found = found or string.find(strupper(row_player), strupper(GetSearchText()))
+
+    if GetOnlineUsersFilterState() then
+      found = found and FilterByOnlineUsers(row)
+    end
+
+    return found
+end
+
 local table_filters = {
   ["buy_port"] =
     function(self, row)
+      found = string.find(strupper(row["cols"][1]["value"]), strupper(GetSearchText()))
+
       if GetOnlineUsersFilterState() then
-        if string.find(strupper(row[1]), strupper(GetSearchText())) and FilterRowByOnlineUsers(row) then
-          return true;
-        else
-          return false;
-        end
-      else
-        if string.find(strupper(row[1]), strupper(GetSearchText())) then
-          return true;
-        else
-          return false;
-        end
+        found = found and FilterByOnlineUsers(row)
       end
+
+      return found
     end,
   ["buy_item"] =
     function(self, row)
-      if GetOnlineUsersFilterState() then
-        if ((not GetSearchText() or GetSearchText() == "") or (ParseItemID(GetSearchText()) and ParseItemID(row[1]) == ParseItemID(GetSearchText())) or string.find(strupper(row[1]), strupper(GetSearchText())) or string.find(strupper(row[3]), strupper(GetSearchText()))) and FilterRowByOnlineUsers(row) then
-          return true;
-        else
-          return false;
-        end
-      else
-        if (not GetSearchText() or GetSearchText() == "") or (ParseItemID(row[1]) == ParseItemID(GetSearchText())) or string.find(strupper(row[1]), strupper(GetSearchText())) or (string.find(strupper(row[3]), strupper(GetSearchText()))) then
-          return true;
-        else
-          return false;
-        end
-      end
+      return SearchItem(self, row)
     end,
   ["sell_item"] =
     function(self, row)
-      if GetOnlineUsersFilterState() then
-        if ((not GetSearchText() or GetSearchText() == "") or (ParseItemID(GetSearchText()) and ParseItemID(row[1]) == ParseItemID(GetSearchText())) or string.find(strupper(row[1]), strupper(GetSearchText())) or string.find(strupper(row[3]), strupper(GetSearchText()))) and FilterRowByOnlineUsers(row) then
-          return true;
-        else
-          return false;
-        end
-      else
-        if (not GetSearchText() or GetSearchText() == "") or (ParseItemID(row[1]) == ParseItemID(GetSearchText())) or string.find(strupper(row[1]), strupper(GetSearchText())) or (string.find(strupper(row[3]), strupper(GetSearchText()))) then
-          return true;
-        else
-          return false;
-        end
-      end
+      return SearchItem(self, row)
     end,
 }
 
@@ -328,7 +325,12 @@ function ParseItemLink(msg)
 end
 
 function ParseItemID(item_link)
+  if not item_link then
+    return nil
+  end
+
   _, _, id = string.find(item_link, "|Hitem:(%x-):")
+
   if id then
     return "i"..id
   else
@@ -336,8 +338,17 @@ function ParseItemID(item_link)
   end
 end
 
+-- Search Helpers
 function GetSearchText()
   return search_box_text
+end
+
+function SearchTextPresent()
+  return not SearchTextBlank()
+end
+
+function SearchTextBlank()
+  return (not GetSearchText() and GetSearchText() == "")
 end
 
 function ExecuteSearch()
