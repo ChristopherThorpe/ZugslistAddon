@@ -40,17 +40,13 @@ local table_filters = {
     end,
   ["buy_item"] =
     function(self, row)
-      print("Filter is: "..GetOnlineUsersFilterState())
       if GetOnlineUsersFilterState() then
-        print("Path A")
         if ((not GetSearchText() or GetSearchText() == "") or (ParseItemID(GetSearchText()) and ParseItemID(row[1]) == ParseItemID(GetSearchText())) or string.find(strupper(row[1]), strupper(GetSearchText())) or string.find(strupper(row[3]), strupper(GetSearchText()))) and FilterRowByOnlineUsers(row) then
           return true;
         else
           return false;
         end
       else
-        print("Path B")
-        print("Searching: "..ParseItemID(row[1]).." for: "..GetSearchText())
         if (not GetSearchText() or GetSearchText() == "") or (ParseItemID(row[1]) == ParseItemID(GetSearchText())) or string.find(strupper(row[1]), strupper(GetSearchText())) or (string.find(strupper(row[3]), strupper(GetSearchText()))) then
           return true;
         else
@@ -441,6 +437,7 @@ end
 function TableClickHook(realrow, button, ...)
   local item_index
   local player_index
+
   if current_tab == "buy_item" or current_tab == "sell_item" then
     item_index = 1
     player_index = 3
@@ -448,10 +445,12 @@ function TableClickHook(realrow, button, ...)
     player_index = 1
   end
   if button == "LeftButton" and IsShiftKeyDown() and item_index then
-    ClickForLink(tables[current_tab]:GetRow(realrow)[item_index])
+    ClickForLink(tables[current_tab]:GetRow(realrow)["cols"][item_index]["value"])
   elseif button == "RightButton" and player_index then
-    OpenTell(tables[current_tab]:GetRow(realrow)[player_index])
+    person = tables[current_tab]:GetRow(realrow)["cols"][player_index]["value"]
+    OpenTell(person)
   end
+
   return ...
 end
 
@@ -459,11 +458,7 @@ function OpenTell(player_name)
   if ChatEdit_GetActiveWindow() then
     ChatEdit_DeactivateChat(ChatEdit_GetActiveWindow())
   end
+
   ChatEdit_ActivateChat(ChatEdit_GetLastActiveWindow())
   ChatEdit_GetActiveWindow():Insert("/w "..player_name.." ")
-  -- test_me = ChatEdit_GetActiveWindow()
-  -- for k, v in pairs(test_me) do
-    -- print(k)
-    -- print(v)
-  -- end
 end
