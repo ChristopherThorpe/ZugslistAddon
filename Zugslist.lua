@@ -84,6 +84,7 @@ local master_header = nil
 local sell_tab_frame = nil
 local buy_tab_frame = nil
 local master_frame = nil
+local zugslist_search_box = nil
 
 function Zugslist:OnInitialize()
   realm = GetRealmName()
@@ -125,16 +126,18 @@ function Zugslist:OnDisable()
 end
 
 function Zugslist:ParseWTB(arg)
+  search_box_text = arg
   self:ToggleBuyFrameOn()
   master_frame.children[2]:SelectTab("buy_item")
-  search_box_text = arg
+  zugslist_search_box:SetText(arg)
   ExecuteSearch()
 end
 
 function Zugslist:ParseWTS(arg)
+  search_box_text = arg
   self:ToggleSellFrameOn()
   master_frame.children[2]:SelectTab("sell_item")
-  search_box_text = arg
+  zugslist_search_box:SetText(arg)
   ExecuteSearch()
 end
 
@@ -171,7 +174,6 @@ end
 function Zugslist:ToggleSellFrameOn()
   if not master_frame then
     self:GenerateNewMasterFrame()
-    self:ToggleSellFrameOn()
   end
 
   if not sell_tab_frame:IsVisible() then
@@ -190,7 +192,7 @@ function Zugslist:GenerateNewMasterFrame()
   master_frame:SetWidth(700)
   master_frame:SetHeight(535)
 
-  local zugslist_search_box = AceGUI:Create("EditBox")
+  zugslist_search_box = AceGUI:Create("EditBox")
   zugslist_search_box:SetWidth(200)
   zugslist_search_box:SetHeight(40)
   zugslist_search_box:SetLabel("Search")
