@@ -42,7 +42,7 @@ function SearchItem(self, row)
     found = found or string.find(strupper(row_player), strupper(GetSearchText()))
 
     if GetOnlineUsersFilterState() then
-      found = found and FilterByOnlineUsers(row)
+      found = found and FilterRowByOnlineUsers(row)
     end
 
     return found
@@ -54,7 +54,7 @@ local table_filters = {
       found = string.find(strupper(row["cols"][1]["value"]), strupper(GetSearchText()))
 
       if GetOnlineUsersFilterState() then
-        found = found and FilterByOnlineUsers(row)
+        found = found and FilterRowByOnlineUsers(row)
       end
 
       return found
@@ -371,7 +371,7 @@ end
 function FilterRowByOnlineUsers(row)
   if not row then return false end
   local name_index = GetNameIndexForCurrentTab()
-  return user_in_table(row[name_index], users_online_table)
+  return user_in_table(row["cols"][name_index]["value"], users_online_table)
 end
 
 function GetNameIndexForCurrentTab()
@@ -392,9 +392,12 @@ function Zugslist:PopulateOnlineUsers()
     end
   end
 
-  for _, v in ipairs(table_data[current_tab]) do
-    if not user_in_table(v[name_index], users_online_table) then
-      wholib:Who("n-"..v[name_index], { callback =
+  for k, v in ipairs(table_data[current_tab]) do
+    name = v["cols"][name_index]["value"]
+
+    if not user_in_table(name, users_online_table) then
+      print("Checking for: "..name)
+      wholib:Who("n-"..name, { callback =
         function (query, results, complete)
           if table.getn(results) == 1 then
             local name_already_in_table = false
