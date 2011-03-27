@@ -5,30 +5,20 @@ local AceGUI = LibStub("AceGUI-3.0")
 local ScrollTable = LibStub("ScrollingTable")
 local wholib = LibStub:GetLibrary("LibWho-2.0"):Library()
 
-local realm = GetRealmName()
-local faction = UnitFactionGroup("player")
-local player = UnitName("player")
-
 local ZugsTradeDB = {}
 
 local tabs_list = {
   ["buy"] = {
-    { value="buy_port", text="Mage Port" },
-    { value="buy_item", text="Items" },
-
-    ["default"] = "buy_port",
+    { value="buy_item", text="Buy" },
+    { value="sell_item", text="Sell" },
+    { value="buy_port", text="Mage Portals" },
+    ["default"] = "buy_item",
   },
-  ["sell"] = {
-    { value="sell_item", text="Items" },
-
-    ["default"] = "sell_item",
-  }
 }
 
 local table_columns = {
   ["item"] = { "Item", "Price", "Player" },
   ["port"] = { "Player", "Price", "Level" },
-  ["tank"] = { "Player", "Price", "Level" },
 }
 
 local table_filters = {
@@ -50,13 +40,17 @@ local table_filters = {
     end,
   ["buy_item"] =
     function(self, row)
+      print("Filter is: "..GetOnlineUsersFilterState())
       if GetOnlineUsersFilterState() then
+        print("Path A")
         if ((not GetSearchText() or GetSearchText() == "") or (ParseItemID(GetSearchText()) and ParseItemID(row[1]) == ParseItemID(GetSearchText())) or string.find(strupper(row[1]), strupper(GetSearchText())) or string.find(strupper(row[3]), strupper(GetSearchText()))) and FilterRowByOnlineUsers(row) then
           return true;
         else
           return false;
         end
       else
+        print("Path B")
+        print("Searching: "..ParseItemID(row[1]).." for: "..GetSearchText())
         if (not GetSearchText() or GetSearchText() == "") or (ParseItemID(row[1]) == ParseItemID(GetSearchText())) or string.find(strupper(row[1]), strupper(GetSearchText())) or (string.find(strupper(row[3]), strupper(GetSearchText()))) then
           return true;
         else
@@ -97,32 +91,30 @@ local master_header = nil
 local sell_tab_frame = nil
 local buy_tab_frame = nil
 local master_frame = nil
-local frame_label = nil
 
 function Zugslist:OnInitialize()
+  realm = GetRealmName()
+  faction = UnitFactionGroup("player")
+  player = UnitName("player")
+
   if ZugslistData and ZugslistData[realm] and ZugslistData[realm][faction] then
     ZugsTradeDB = ZugslistData[realm][faction]
   end
-  if not ZugsTradeDB then
-    ZugsTradeDB = {
-      ["ports"] = {},
-      ["wtb"] = {},
-      ["wts"] = {},
-      ["wanted"] = {},
-    }
-  end
+
+  if not ZugsTradeDB then ZugsTradeDB = {} end
   if not ZugsTradeDB["ports"] then ZugsTradeDB["ports"] = {} end
   if not ZugsTradeDB["wtb"] then ZugsTradeDB["wtb"] = {} end
   if not ZugsTradeDB["wts"] then ZugsTradeDB["wts"] = {} end
   if not ZugsTradeDB["wanted"] then ZugsTradeDB["wanted"] = {} end
-  if not ZugslistBuyList then ZugslistBuyList = {} end
+
   if not ZugslistOptions then
     ZugslistOptions = {
       min_alert_value = 50000,
       last_selected_tab = "item",
     }
   end
-  current_tab = "buy_port"
+
+  current_tab = "buy_item"
 
   self:RegisterChatCommand("wtb", "ParseWTB")
   self:RegisterChatCommand("wts", "ParseWTS")
@@ -137,15 +129,6 @@ end
 
 function Zugslist:OnDisable()
   -- stuff
-end
-
-function Zugslist:AddBuyRequest(item_id, user, offer)
-  item_index = "i"..item_id
-  if ZugslistBuyList[item_index] then
-    table.insert(ZugslistBuyList[item_index], { user, offer })
-  else
-    ZugslistBuylist[item_index] = { { user, offer } }
-  end
 end
 
 function Zugslist:ParseWTB(arg)
@@ -183,8 +166,7 @@ function Zugslist:ToggleBuyFrameOn()
   if not master_frame then
     self:GenerateNewMasterFrame()
   end
-  sell_tab_frame.frame:Hide()
-  frame_label:SetText("Buying")
+
   if not buy_tab_frame:IsVisible() then
     master_frame.children[2] = buy_tab_frame
     buy_tab_frame.frame:Show()
@@ -198,8 +180,7 @@ function Zugslist:ToggleSellFrameOn()
     self:GenerateNewMasterFrame()
     self:ToggleSellFrameOn()
   end
-  buy_tab_frame.frame:Hide()
-  frame_label:SetText("Selling")
+
   if not sell_tab_frame:IsVisible() then
     master_frame.children[2] = sell_tab_frame
     sell_tab_frame.frame:Show()
@@ -215,24 +196,6 @@ function Zugslist:GenerateNewMasterFrame()
   master_frame:SetLayout("List")
   master_frame:SetWidth(700)
   master_frame:SetHeight(535)
-
-  frame_label = AceGUI:Create("Label")
-  frame_label:SetText("Buying")
-  frame_label:SetWidth(100)
-  frame_label:SetFont("Fonts\\FRIZQT__.TTF", 20)
-
-  local buysell = AceGUI:Create("Button")
-  buysell:SetWidth(60)
-  buysell:SetText("Sell")
-  buysell:SetCallback("OnClick", function(object)
-    if buy_tab_frame:IsVisible() then
-      Zugslist:ToggleSellFrameOn()
-      object:SetText("Buy")
-    elseif sell_tab_frame:IsVisible() then
-      Zugslist:ToggleBuyFrameOn()
-      object:SetText("Sell")
-    end
-  end)
 
   local zugslist_search_box = AceGUI:Create("EditBox")
   zugslist_search_box:SetWidth(200)
@@ -256,7 +219,7 @@ function Zugslist:GenerateNewMasterFrame()
   header_group:SetLayout("Flow")
   header_group:SetRelativeWidth(1)
   header_group:SetHeight(40)
-  header_group:AddChildren(frame_label, zugslist_search_box, search_button, online_users_checkbox, buysell)
+  header_group:AddChildren(zugslist_search_box, search_button, online_users_checkbox)
 
   sell_tab_frame = AceGUI:Create("TabGroup")
   sell_tab_frame:SetLayout("Fill")
@@ -278,7 +241,6 @@ function Zugslist:GenerateNewMasterFrame()
 
   master_frame:AddChildren(header_group, sell_tab_frame)
   table.remove(master_frame.children, 2)
-  sell_tab_frame.frame:Hide()
   master_frame:AddChild(buy_tab_frame)
   master_frame:AddChild(instruction_label)
   buy_tab_frame:SelectTab(tabs_list["buy"]["default"])
@@ -292,7 +254,6 @@ function Zugslist:BuildNewTable(column_headers, containing_frame)
       ["width"] = 200,
       ["align"] = "LEFT",
       ["defaultsort"] = dsc,
-      -- ["sortnext"] = 2,
       ["DoCellUpdate"] = nil,
     },
     {
@@ -349,44 +310,12 @@ function TabChange(container, event, tab_clicked)
   ExecuteSearch()
 end
 
-function Zugslist:CurrencyConversion(convert_me, index_col)
-  if convert_me then
-    if index_col then
-      local temp_table = {}
-      for i = 1, table.getn(convert_me) do
-        local temp_sub_table = {}
-        for j = 1, table.getn(convert_me[i]) do
-          if j == index_col then
-            local gold, silver, copper = Zugslist:ConvertToSubCurrencies(convert_me[i][index_col])
-            local cost_as_string = ""
-            if gold  then cost_as_string = cost_as_string..gold.."g " end
-            if silver  then cost_as_string = cost_as_string..silver.."s " end
-            if copper  then cost_as_string = cost_as_string..copper.."c " end
-            table.insert(temp_sub_table, cost_as_string)
-          else
-            table.insert(temp_sub_table, convert_me[i][j])
-          end
-        end
-        table.insert(temp_table, temp_sub_table)
-      end
-      return temp_table
-    else
-      local gold, silver, copper = Zugslist:ConvertToSubCurrencies(convert_me[i][index_col])
-      local cost_as_string = ""
-      if gold  then cost_as_string = cost_as_string..gold.."g " end
-      if silver  then cost_as_string = cost_as_string..silver.."s " end
-      if copper  then cost_as_string = cost_as_string..copper.."c " end
-      return cost_as_string
-    end
-  end
-end
-
 function Zugslist:CHAT_MSG_LOOT(event, msg)
   item_id = ParseItemID(msg)
   if item_id then
     if ZugsTradeDB["wanted"][item_id] then
       if best_price >= ZugslistOptions["min_alert_value"] then
-        print_string = "Someone on Zugslist wants to buy it for"..CurrencyConversion(ZugslistTradeDB["wanted"][item_id]).."."
+        print_string = "Someone on Zugslist wants to buy it for"..ZugslistTradeDB["wanted"][item_id]["offer"].."."
         print(print_string)
       end
     end
@@ -409,13 +338,6 @@ function ParseItemID(item_link)
   else
     return nil
   end
-end
-
-function Zugslist:ConvertToSubCurrencies(cost_in_copper)
-  copper = cost_in_copper % 100
-  silver = ((cost_in_copper - copper) % 10000) / 100
-  gold = (cost_in_copper - copper - (silver * 100)) / 10000
-  return gold, silver, copper
 end
 
 function GetSearchText()
@@ -447,12 +369,14 @@ end
 
 function Zugslist:PopulateOnlineUsers()
   local now = GetTime()
+  local name_index = GetNameIndexForCurrentTab()
+
   for i, v in ipairs(users_online_table) do
     if (v["time"] + 300) < now then
       table.remove(users_online_table, i)
     end
   end
-  local name_index = GetNameIndexForCurrentTab()
+
   for _, v in ipairs(table_data[current_tab]) do
     if not user_in_table(v[name_index], users_online_table) then
       wholib:Who("n-"..v[name_index], { callback =
