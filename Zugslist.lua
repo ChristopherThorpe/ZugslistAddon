@@ -280,6 +280,7 @@ end
 
 function TabChange(container, event, tab_clicked)
   _, _, column = string.find(tab_clicked, "_(%a-)$")
+
   if not tables[tab_clicked] then
     tables[tab_clicked] = Zugslist:BuildNewTable(table_columns[column], container)
     tables[tab_clicked].frame:SetPoint("BOTTOMLEFT",15,15)
@@ -287,6 +288,7 @@ function TabChange(container, event, tab_clicked)
     tables[tab_clicked].frame:SetPoint("RIGHT",-15,0)
     tables[tab_clicked]:EnableSelection(false)
   end
+
   if tab_clicked == "buy_port" then
     table_data[tab_clicked] = ZugsTradeDB["ports"]
   elseif tab_clicked == "buy_item" then
@@ -294,12 +296,15 @@ function TabChange(container, event, tab_clicked)
   elseif tab_clicked == "sell_item" then
     table_data[tab_clicked] = ZugsTradeDB["wtb"]
   end
+
   if table_data[tab_clicked] then
    tables[tab_clicked]:SetData(table_data[tab_clicked])
   end
+
   for k in pairs(tables) do
     tables[k]:Hide()
   end
+
   tables[tab_clicked]:Show()
   current_tab = tab_clicked
   ExecuteSearch()
@@ -307,6 +312,7 @@ end
 
 function Zugslist:CHAT_MSG_LOOT(event, msg)
   item_id = ParseItemID(msg)
+
   if item_id then
     if ZugsTradeDB["wanted"][item_id] then
       if best_price >= ZugslistOptions["min_alert_value"] then
@@ -392,15 +398,18 @@ function Zugslist:PopulateOnlineUsers()
         function (query, results, complete)
           if table.getn(results) == 1 then
             local name_already_in_table = false
+
             for i, v in ipairs(users_online_table) do
               if v["name"] == results[1].Name then
                 name_already_in_table = true
                 v["time"] = GetTime()
               end
             end
+
             if not name_already_in_table then
               table.insert(users_online_table, { ["name"] = results[1].Name, ["time"] = GetTime() })
             end
+
             ApplyTableFilters()
           end
         end
@@ -414,6 +423,7 @@ function user_in_table(item, list)
   for _, v in ipairs(list) do
     if item == v["name"] then return true end
   end
+
   return false
 end
 
@@ -429,6 +439,7 @@ end
 
 function ClickForLink(link)
   local chatbox = ChatEdit_GetActiveWindow()
+
   if chatbox then
     ChatEdit_InsertLink(link)
   else
@@ -439,10 +450,12 @@ end
 function SetTableClickHook(set_this_table)
   local table_events = set_this_table.DefaultEvents
   local old_table_click = table_events["OnClick"]
+
   table_events["OnClick"] = function (...)
     _, _, _, _, _, realrow, _, _, button = ...
     return TableClickHook(realrow, button, old_table_click(...))
   end
+
   set_this_table:RegisterEvents(table_events, true)
   return set_this_table
 end
@@ -457,6 +470,7 @@ function TableClickHook(realrow, button, ...)
   elseif current_tab == "buy_port" then
     player_index = 1
   end
+
   if button == "LeftButton" and IsShiftKeyDown() and item_index then
     ClickForLink(tables[current_tab]:GetRow(realrow)["cols"][item_index]["value"])
   elseif button == "RightButton" and player_index then
