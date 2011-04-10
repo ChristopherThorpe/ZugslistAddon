@@ -17,7 +17,7 @@ local tabs_list = {
 }
 
 local table_columns = {
-  ["item"] = { "Item", "Price", "Player" },
+  ["item"] = { "Item", "Buyout", "Tip", "Player" },
   ["port"] = { "Player", "Price", "Level" },
 }
 
@@ -27,7 +27,7 @@ function SearchItem(self, row)
     found = false
 
     row_item = row["cols"][1]["value"]
-    row_player = row["cols"][3]["value"]
+    row_player = row["cols"][4]["value"]
     row_item_id = ParseItemID(row_item)
     search_item_id = ParseItemID(GetSearchText())
 
@@ -246,21 +246,29 @@ function Zugslist:BuildNewTable(column_headers, containing_frame)
   {
     {
       ["name"] = column_headers[1],
-      ["width"] = 200,
+      ["width"] = 300,
       ["align"] = "LEFT",
       ["defaultsort"] = dsc,
       ["DoCellUpdate"] = nil,
     },
     {
       ["name"] = column_headers[2],
-      ["width"] = 150,
+      ["width"] = 100,
       ["align"] = "LEFT",
       ["defaultsort"] = asc,
       ["DoCellUpdate"] = nil,
     },
     {
       ["name"] = column_headers[3],
-      ["width"] = 150,
+      ["width"] = 100,
+      ["align"] = "LEFT",
+      ["defaultsort"] = dsc,
+      ["sortnext"] = 2,
+      ["DoCellUpdate"] = nil,
+    },
+    {
+      ["name"] = column_headers[4],
+      ["width"] = 100,
       ["align"] = "LEFT",
       ["defaultsort"] = dsc,
       ["sortnext"] = 2,
@@ -292,9 +300,9 @@ function TabChange(container, event, tab_clicked)
   if tab_clicked == "buy_port" then
     table_data[tab_clicked] = ZugsTradeDB["ports"]
   elseif tab_clicked == "buy_item" then
-    table_data[tab_clicked] = ZugsTradeDB["wts"]
-  elseif tab_clicked == "sell_item" then
     table_data[tab_clicked] = ZugsTradeDB["wtb"]
+  elseif tab_clicked == "sell_item" then
+    table_data[tab_clicked] = ZugsTradeDB["wts"]
   end
 
   if table_data[tab_clicked] then
@@ -376,7 +384,7 @@ end
 
 function GetNameIndexForCurrentTab()
   if current_tab == "buy_item" or current_tab == "sell_item" then
-    return 3
+    return 2
   elseif current_tab == "buy_port" then
     return 1
   end
