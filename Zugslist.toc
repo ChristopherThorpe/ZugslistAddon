@@ -1,4 +1,4 @@
-## Interface: 40000
+## Interface: 40100
 ## Title: Zugslist (www.zugslist.com)
 ## Notes: "Zugslist.com: Making it easier for you to get things done!"
 ## Author: Thomas Robertson
